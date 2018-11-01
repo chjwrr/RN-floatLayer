@@ -4,7 +4,9 @@ RN组件-浮层-底部向上弹出
 
 # 使用方法
 
+
 {
+
 this.state.isShowFloatLayer && <FloatLayer floatLayerType={'TYPE_IMAGE'}
                                            title={title}
                                            onCloseClick={this.closeClick}
@@ -24,12 +26,14 @@ this.state.isShowFloatLayer && <FloatLayer floatLayerType={'TYPE_IMAGE'}
                         <Text style={{height: 20, width: 80, marginTop: 100}}>安达市大</Text>
 
                     </FloatLayer>
+                    
 }
 
 
 
 
 FloatLayer.propsType = {
+
     /*
     * 弹框类型 （必填）
     *
@@ -69,4 +73,5 @@ FloatLayer.propsType = {
     * */
     scrollDataSource: PropsType.array, // 滚动列表数组 {title: ''，...}
     onScrollListItemClick: PropsType.func, // 滚动列表item点击, 带有一个 index 的参数，标记点击了第几个item
+    
 }
