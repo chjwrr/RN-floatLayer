@@ -6,7 +6,6 @@ RN组件-浮层-底部向上弹出
 
 ```
 {
-
 this.state.isShowFloatLayer && <FloatLayer floatLayerType={'TYPE_IMAGE'}
                                            title={title}
                                            onCloseClick={this.closeClick}
@@ -25,13 +24,12 @@ this.state.isShowFloatLayer && <FloatLayer floatLayerType={'TYPE_IMAGE'}
                         <Text style={{height: 20, width: 80, marginTop: 100}}>安达市大</Text>
                         <Text style={{height: 20, width: 80, marginTop: 100}}>安达市大</Text>
 
-                    </FloatLayer>
-                    
+                    </FloatLayer>               
 }
 
 ```
 
-
+```
 FloatLayer.propsType = {
 
     /*
@@ -75,3 +73,4 @@ FloatLayer.propsType = {
     onScrollListItemClick: PropsType.func, // 滚动列表item点击, 带有一个 index 的参数，标记点击了第几个item
     
 }
+```
