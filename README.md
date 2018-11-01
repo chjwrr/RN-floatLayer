@@ -4,7 +4,7 @@ RN组件-浮层-底部向上弹出
 
 # 使用方法
 
-
+```
 {
 
 this.state.isShowFloatLayer && <FloatLayer floatLayerType={'TYPE_IMAGE'}
@@ -29,7 +29,7 @@ this.state.isShowFloatLayer && <FloatLayer floatLayerType={'TYPE_IMAGE'}
                     
 }
 
-
+```
 
 
 FloatLayer.propsType = {
