@@ -16,6 +16,9 @@ import {
     listItemHeight,
     listItemMaxCount
 } from '../constValue/floatLayerValue'
+import FloatLayerType from '../FloatLayerType'
+
+
 const screenHeight = Dimensions.get('window').height;
 
 export default class PopLayer extends PureComponent {
@@ -28,34 +31,34 @@ export default class PopLayer extends PureComponent {
             popLayHeight: 0, // 默认内容高度
             scrollEnabled: false, // 滚动视图是否可以滚动，超过最大值可以滚动
             contentHeight: 0, // 内容组件高度，也就是scrollView的高度
-            isShowOpacityBg: false, // 底部半透明遮罩层 this.props.floatLayerType === 'TYPE_TITLE_SCROLL'且 数据个数大于5时才使用到此属性
+            isShowOpacityBg: false, // 底部半透明遮罩层 this.props.floatLayerType === FloatLayerType.TYPE_TITLE_SCROLL且 数据个数大于5时才使用到此属性
         };
 
-        let contentMaxHeight; // 内容组件的最大高度
-        let isBeginAnimated; // 是否开始执行动画
+        this.contentMaxHeight = layerMaxHeight; // 内容组件的最大高度
+        this.isBeginAnimated = false; // 是否开始执行动画
 
         this.beginAnimal = this.beginAnimal.bind(this)
         this.closeClick = this.closeClick.bind(this)
         this.contentOnLayout = this.contentOnLayout.bind(this)
-        this.onScrollEnd = this.onScrollEnd.bind(this)
+        this.onScroll = this.onScroll.bind(this)
         this.onScrollListItemClick = this.onScrollListItemClick.bind(this)
     }
 
     componentDidMount(){
         // 不同类型下的内容组件的最大高度
-        if (this.props.floatLayerType === 'TYPE_IMAGE') {
-            contentMaxHeight = layerMaxHeight - topHeightTypeImage - bottomHeight - bottomBottom
+        if (this.props.floatLayerType === FloatLayerType.TYPE_IMAGE) {
+            this.contentMaxHeight = layerMaxHeight - topHeightTypeImage - bottomHeight - bottomBottom
         }
-        if (this.props.floatLayerType === 'TYPE_TITLE') {
-            contentMaxHeight = layerMaxHeight - topHeightTypeTitle - bottomHeight - bottomBottom
+        if (this.props.floatLayerType === FloatLayerType.TYPE_TITLE) {
+            this.contentMaxHeight = layerMaxHeight - topHeightTypeTitle - bottomHeight - bottomBottom
         }
-        if (this.props.floatLayerType === 'TYPE_TITLE_BUTTON') {
-            contentMaxHeight = layerMaxHeight - topHeightTypeTitle - bottomBottom
+        if (this.props.floatLayerType === FloatLayerType.TYPE_TITLE_BUTTON) {
+            this.contentMaxHeight = layerMaxHeight - topHeightTypeTitle - bottomBottom
         }
-        if (this.props.floatLayerType === 'TYPE_TITLE_SCROLL') {
-            contentMaxHeight = listItemHeight * listItemMaxCount
+        if (this.props.floatLayerType === FloatLayerType.TYPE_TITLE_SCROLL) {
+            this.contentMaxHeight = listItemHeight * listItemMaxCount
         }
-        if (this.props.floatLayerType === 'TYPE_TITLE_SCROLL' && this.props.scrollDataSource.length > 5) {
+        if (this.props.floatLayerType === FloatLayerType.TYPE_TITLE_SCROLL && this.props.scrollDataSource && this.props.scrollDataSource.length > 5) {
             this.setState({
                 isShowOpacityBg: true
             })
@@ -116,21 +119,21 @@ export default class PopLayer extends PureComponent {
         let contentHeight = event.nativeEvent.layout.height;
 
         // 总体弹框的高度
-        let popLayerHeight;
-        if (this.props.floatLayerType === 'TYPE_TITLE'){
+        let popLayerHeight = 0;
+        if (this.props.floatLayerType === FloatLayerType.TYPE_TITLE){
             popLayerHeight = topHeightTypeTitle  + contentHeight  + bottomHeight + bottomBottom
         }
-        if (this.props.floatLayerType === 'TYPE_IMAGE'){
+        if (this.props.floatLayerType === FloatLayerType.TYPE_IMAGE){
             popLayerHeight = topHeightTypeImage  + contentHeight  + bottomHeight + bottomBottom
         }
-        if (this.props.floatLayerType === 'TYPE_TITLE_BUTTON' || this.props.floatLayerType === 'TYPE_TITLE_SCROLL'){
+        if (this.props.floatLayerType === FloatLayerType.TYPE_TITLE_BUTTON || this.props.floatLayerType === FloatLayerType.TYPE_TITLE_SCROLL){
             popLayerHeight = topHeightTypeTitle  + contentHeight + bottomBottom
         }
 
-
         // 如果内容高度大于最大高度，则视图可以滚动
-        if (parseFloat(contentHeight) > parseFloat(contentMaxHeight)){
+        if (parseFloat(contentHeight) > parseFloat(this.contentMaxHeight)){
             this.isBeginAnimated = true; // 开始动画，不在执行 contentOnLayout
+
 
            this.setState({
                scrollEnabled: true,
@@ -139,17 +142,19 @@ export default class PopLayer extends PureComponent {
            // 总体弹框高度等于最大高度
            popLayerHeight = layerMaxHeight
 
-           if (this.props.floatLayerType === 'TYPE_TITLE_BUTTON' || this.props.floatLayerType === 'TYPE_TITLE_SCROLL'){
+            // 内容高度等于最大内容高度
+           contentHeight = this.contentMaxHeight
+
+           if (this.props.floatLayerType === FloatLayerType.TYPE_TITLE_BUTTON || this.props.floatLayerType === FloatLayerType.TYPE_TITLE_SCROLL){
                // 没有上下间距，所以内容的高度就是scrollView的高度
-               contentHeight = contentMaxHeight
                popLayerHeight = contentHeight + topHeightTypeTitle + bottomBottom
            }else {
                // 此高度赋值给scrollView，因view 有 paddingVertical，所以scrollView得高度相应的减去padding
-               contentHeight = contentMaxHeight - contenVertical - contenVertical
+               contentHeight = this.contentMaxHeight - contenVertical - contenVertical
            }
        }
 
-        if(this.props.floatLayerType === 'TYPE_TITLE_SCROLL'){
+        if(this.props.floatLayerType === FloatLayerType.TYPE_TITLE_SCROLL){
             if (parseFloat(popLayerHeight) < layerMinHeight){
                 // 小于最小高度
                 popLayerHeight = layerMinHeight
@@ -165,19 +170,27 @@ export default class PopLayer extends PureComponent {
 
     }
 
-    // 滚动结束
-    onScrollEnd(e){
+    // 滚动
+    onScroll(e){
 
-        if (this.props.floatLayerType === 'TYPE_TITLE_SCROLL' && this.props.scrollDataSource.length > 5){
+        if (this.props.floatLayerType === FloatLayerType.TYPE_TITLE_SCROLL && this.props.scrollDataSource && this.props.scrollDataSource.length > 5){
             let offsetY = e.nativeEvent.contentOffset.y; //滑动距离
             let contentSizeHeight = e.nativeEvent.contentSize.height; //scrollView contentSize高度
             let oriageScrollHeight = e.nativeEvent.layoutMeasurement.height; //scrollView高度
-            if (offsetY + oriageScrollHeight >= contentSizeHeight){
 
+            if (offsetY + oriageScrollHeight + 30 >= contentSizeHeight){
+
+                if (!this.state.isShowOpacityBg){
+                    return
+                }
                 this.setState({
                     isShowOpacityBg: false
                 })
             }else {
+                if (this.state.isShowOpacityBg){
+                    return
+                }
+
                 this.setState({
                     isShowOpacityBg: true
                 })
@@ -190,9 +203,3 @@ export default class PopLayer extends PureComponent {
         return Render.render.call(this);
     }
 }
-
-PopLayer.propsType = {
-}
-PopLayer.defaultProps = {
-}
-

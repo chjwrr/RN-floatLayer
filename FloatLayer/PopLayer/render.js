@@ -4,6 +4,7 @@ import {
     Animated,
     View,
     ScrollView,
+    Image
 } from 'react-native';
 
 import styles from './styles'
@@ -12,6 +13,10 @@ import TopViewTypeTitle from '../TopViewTypeTitle'
 import BottomView from '../BottomView'
 import TopViewTypeTitleButton from '../TopViewTypeTitleButton'
 import CenterPopListView from '../PopListView'
+import FloatLayerType from '../FloatLayerType'
+
+const FloatLayerShadow = require('../image/floatLayer_shadow.png')
+
 export default {
 
     render() {
@@ -22,60 +27,64 @@ export default {
             onMainBtnClick,
             onSecondaryBtnClick,
             floatLayerType,
-            subTitle,
-            subTitleIsRichText,
-            richBeginIndex,
-            richLength,
+            subTitles,
             imageType,
-            onScrollListItemClick
-        } = this.props
+            scrollDataSource,
+            isBanMainBtn,
+            isAutoAllowMainBtn
+        } = this.props;
 
 
-        let topViewComponent;
+        // 底部按钮
+        let topViewComponent = <View/>;
         let bottomViewComponent = <BottomView mainBtnText={mainBtnText}
                                               secondaryBtnText={secondaryBtnText}
                                               onMainBtnClick={onMainBtnClick}
-                                              onSecondaryBtnClick={onSecondaryBtnClick} />
+                                              onSecondaryBtnClick={onSecondaryBtnClick}
+                                              isBanMainBtn={isBanMainBtn}
+                                              isAutoAllowMainBtn={isAutoAllowMainBtn} />
+        // 中间内容视图
         let contentStyle = styles.contentView;
-        let contentComponent = this.props.children
+        let contentComponent = this.props.children || <View/>
 
-        if (floatLayerType === 'TYPE_TITLE' || floatLayerType === 'TYPE_TITLE_SCROLL'){
+        // 顶部视图
+        if (floatLayerType === FloatLayerType.TYPE_TITLE || floatLayerType === FloatLayerType.TYPE_TITLE_SCROLL){
             topViewComponent = <TopViewTypeTitle title={title} onCloseClick={this.closeClick} />
         }
-        if (floatLayerType === 'TYPE_IMAGE'){
+        if (floatLayerType === FloatLayerType.TYPE_IMAGE){
             topViewComponent = <TopViewTypeImage title={title}
                                                  onCloseClick={this.closeClick}
-                                                 subTitle={subTitle}
-                                                 subTitleIsRichText={subTitleIsRichText}
-                                                 richBeginIndex={richBeginIndex}
-                                                 richLength={richLength}
+                                                 subTitles={subTitles}
                                                  imageType={imageType}
                                                  onCloseClick={this.closeClick} />
         }
 
 
-        if (floatLayerType === 'TYPE_TITLE_BUTTON') {
+        if (floatLayerType === FloatLayerType.TYPE_TITLE_BUTTON) {
             topViewComponent = <TopViewTypeTitleButton title={title}
                                     mainBtnText={mainBtnText}
                                     secondaryBtnText={secondaryBtnText}
                                     onMainBtnClick={onMainBtnClick}
-                                     onSecondaryBtnClick={onSecondaryBtnClick}/>
+                                    onSecondaryBtnClick={onSecondaryBtnClick}/>
             bottomViewComponent = <View/>
             contentStyle = {}
         }
 
 
-        if (floatLayerType === 'TYPE_TITLE_SCROLL') {
+        let scrollDataSourceNew = scrollDataSource || []
+        if (floatLayerType === FloatLayerType.TYPE_TITLE_SCROLL) {
             bottomViewComponent = <View/>
             contentStyle = {}
-            contentComponent = <CenterPopListView scrollDataSource={this.props.scrollDataSource}
+            contentComponent = <CenterPopListView scrollDataSource={scrollDataSourceNew}
                                                   onScrollListItemClick={this.onScrollListItemClick}/>
         }
 
+        //  TYPE_TITLE_SCROLL  列表多于5条，底部出现半透明层遮罩
         let bgOpacityView = <View/>
-        if (floatLayerType === 'TYPE_TITLE_SCROLL' && this.props.scrollDataSource.length >= 6 && this.state.isShowOpacityBg) {
-            bgOpacityView = <View style={styles.bg}/>
+        if (floatLayerType === FloatLayerType.TYPE_TITLE_SCROLL && scrollDataSourceNew.length >= 6 && this.state.isShowOpacityBg) {
+            bgOpacityView = <Image source={FloatLayerShadow} style={styles.bgImg}/>
         }
+
         return (
             <Animated.View style={[styles.container, {height: this.state.popLayHeight, transform: [{translateY:this.state.popTop}]}]}  >
 
@@ -85,7 +94,8 @@ export default {
                     <ScrollView style={this.state.scrollEnabled ? {height: this.state.contentHeight} : {}}
                                 scrollEnabled={this.state.scrollEnabled}
                                 showsVerticalScrollIndicator={false}
-                                onMomentumScrollEnd={this.onScrollEnd}
+                                onScroll={this.onScroll}
+                                scrollEventThrottle={20}
                     >
                         {contentComponent}
                     </ScrollView>

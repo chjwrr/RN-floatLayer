@@ -8,6 +8,9 @@ import {
 } from 'react-native';
 
 import styles from './styles'
+import {
+    subTitleColor
+} from '../constValue/colorValue'
 
 const CloseImage = require('../image/floatLayer_close.png')
 const SuccessImage = require('../image/floatLayer_Success.png')
@@ -16,26 +19,7 @@ const WarningImage = require('../image/floatLayer_Warning.png')
 export default {
 
     render() {
-        const {title, subTitle, onCloseClick, subTitleIsRichText, richBeginIndex, richLength, imageType} = this.props
-
-        let beginText = subTitle;
-        let endText = '';
-        let richText = '';
-
-        if (subTitleIsRichText){
-            if (richBeginIndex + richLength <= subTitle.length){
-                beginText = subTitle.substr(0, richBeginIndex)
-                richText = subTitle.substr(richBeginIndex, richLength)
-                endText = subTitle.substr(richBeginIndex + richLength, subTitle.length - (richBeginIndex + richLength))
-            }
-        }
-
-        let richTextComponent = subTitleIsRichText  ? <Text numberOfLines={1} style={styles.subTitle}>
-                {beginText}
-                <Text style={styles.subRichTitle}>{richText}</Text>
-                {endText}
-            </Text> :
-            <Text numberOfLines={1} style={styles.subTitle}>{subTitle}</Text>
+        const {title, subTitles, onCloseClick, imageType} = this.props
 
         return (
             <View style={styles.container}>
@@ -46,10 +30,17 @@ export default {
                 </View>
                 <View style={styles.view}>
                     <Image style={styles.iconImg} source={imageType === 'success' ? SuccessImage : WarningImage}/>
-                    <Text style={styles.title}>{title}</Text>
+                    <Text numberOfLines={1} style={styles.title}>{title}</Text>
 
-                    { richTextComponent }
-
+                    <Text numberOfLines={1} style={styles.subTitleView}>
+                        {
+                            subTitles && subTitles.map((item, index)=>{
+                                return <Text key={index} style={[styles.subTitle,{color: item.color || subTitleColor}]}>
+                                    {item.content}
+                                </Text>
+                            })
+                        }
+                    </Text>
                 </View>
 
             </View>

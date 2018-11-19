@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 
 import styles from './styles'
-
+import {banMainColor} from '../constValue/colorValue'
 export default {
 
     render() {
@@ -15,21 +15,19 @@ export default {
         return (
             <View style={styles.container}>
 
-
                 {
                     secondaryBtnText ? <View style={styles.secondaryView}>
                         <TouchableOpacity style={styles.secondaryBtn} onPress={onSecondaryBtnClick}>
-                            <Text style={styles.secondaryBtnText}>{secondaryBtnText}</Text>
+                            <Text numberOfLines={1} style={styles.secondaryBtnText}>{secondaryBtnText}</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.secondaryMainBtn} onPress={onMainBtnClick}>
-                            <Text style={styles.mainText}>{mainBtnText}</Text>
+                        <TouchableOpacity disabled={this.state.isBan} style={[styles.secondaryMainBtn, this.state.isBan ? {backgroundColor: banMainColor} : {}]} onPress={onMainBtnClick}>
+                            <Text numberOfLines={1} style={styles.mainText}>{mainBtnText}</Text>
                         </TouchableOpacity>
-                    </View>:  <TouchableOpacity style={styles.mainBtn} onPress={onMainBtnClick}>
-                        <Text style={styles.mainText}>{mainBtnText}</Text>
+                    </View>:  <TouchableOpacity disabled={this.state.isBan} style={[styles.mainBtn, this.state.isBan ? {backgroundColor: banMainColor} : {}]} onPress={onMainBtnClick}>
+                        <Text numberOfLines={1} style={styles.mainText}>{mainBtnText}</Text>
                     </TouchableOpacity>
 
                 }
-
 
             </View>
         )

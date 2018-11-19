@@ -15,8 +15,8 @@ export const contenVertical = 25 // 内容上下边距
 export const contentHorizontal = 16 // 内容左右边距
 
 export const bottomHorizontal = 12 // 底部按钮左右边距
-export const bottomHeight = 44 // 底部按钮高度
-export const bottomBottom = IsIphoneX ? 34 : 0 // 底部按钮距离底部的高度
+export const bottomHeight = 54 // 底部按钮高度
+export const bottomBottom = IsIphoneX() ? 34 : 0 // 底部按钮距离底部的高度
 export const bottomSpaceWidth = 10 // 底部两个按钮之间的间距
 
 export const animatedTime = 250 // 动画时间

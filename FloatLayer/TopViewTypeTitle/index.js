@@ -17,8 +17,9 @@ export default class TopViewTypeTitle extends PureComponent {
 TopViewTypeTitle.propsType = {
     title: PropsType.string.isRequired, // 标题
     onCloseClick: PropsType.func.isRequired, // 关闭事件
-}
+};
 TopViewTypeTitle.defaultProps = {
-}
+    title: '请填写"title"',
+};
 
 

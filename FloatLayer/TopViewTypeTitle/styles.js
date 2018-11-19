@@ -6,15 +6,18 @@ import {
 } from 'react-native';
 
 const {width, height} = Dimensions.get('window');
-import { topHorizontal } from '../constValue/floatLayerValue'
 import {
     titleColor,
     lineColor
 } from '../constValue/colorValue'
+import {
+    topHeightTypeTitle
+} from '../constValue/floatLayerValue'
+
 export default StyleSheet.create({
 
     container: {
-        height: 60,
+        height: topHeightTypeTitle,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',

@@ -16,13 +16,14 @@ export default StyleSheet.create({
     container: {
         position: 'absolute',
         width,
-        backgroundColor: whiteColor,
+        backgroundColor: 'white',
         left: 0,
         borderTopLeftRadius: 5,
         borderTopRightRadius: 5,
     },
     contentView: {
         paddingVertical: contenVertical,
+        // backgroundColor: 'red'
     },
     bg:{
         position: 'absolute',
@@ -30,5 +31,11 @@ export default StyleSheet.create({
         height: 55,
         width,
         backgroundColor: 'rgba(255,255,255,0.7)'
+    },
+    bgImg: {
+        position: 'absolute',
+        bottom: 0,
+        height: 55,
+        width
     }
 })

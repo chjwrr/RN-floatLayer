@@ -8,14 +8,15 @@ import {
 } from 'react-native';
 
 import styles from './styles'
-const CloseImage = require('../image/floatLayer_close.png')
+const CloseImage = require('../image/floatLayer_close.png');
 
 export default {
 
     render() {
         const {title, onCloseClick} = this.props
 
-        let showTitle = title
+        let showTitle = title;
+
         if (title.length > 10){
             showTitle = title.substr(0, 10) + '...'
         }

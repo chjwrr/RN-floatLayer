@@ -20,9 +20,18 @@ export default StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
     },
+    titleView: {
+        position: 'absolute',
+        height: 60,
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: width - 90 - 90 - 15 -15 - 20, // 最大宽度
+        left: 90 + 15 + 10,
+    },
     title: {
         fontSize: 16,
-        color: titleColor
+        color: titleColor,
+        textAlign: 'center'
     },
     leftBtn: {
         marginLeft: 15,

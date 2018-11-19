@@ -3,12 +3,38 @@ import {
     BackAndroid,
     Platform,
     Animated,
+    DeviceEventEmitter
 } from 'react-native'
 import Render from './render'
 import {animatedTime, animatedOpacity} from './constValue/floatLayerValue'
 import PropsType from 'prop-types'
+import FloatLayerType from './FloatLayerType'
+class FloatLayer extends PureComponent {
 
-export default class FloatLayer extends PureComponent {
+    /*
+        public function
+    */
+
+    // 显示浮层
+    showFloatLayer(){
+        this.setState({
+            isShowModal: true,
+            isHiddenPopLayer: false
+        },()=>{
+            this.beginAnimal()
+        })
+    }
+
+    // 禁止主操作按钮
+    banMainBtn(){
+        DeviceEventEmitter.emit('banMainBtn')
+    }
+
+    // 启用主操作按钮
+    allowMainBtn(){
+        DeviceEventEmitter.emit('allowMainBtn')
+    }
+
 
     constructor(props) {
         super(props)
@@ -16,6 +42,7 @@ export default class FloatLayer extends PureComponent {
         this.state = {
             fadeOpacity: new Animated.Value(0), //背景透明度设置初始值,
             isHiddenPopLayer: false, // 是否隐藏弹框
+            isShowModal: false
         };
 
         this.beginAnimal = this.beginAnimal.bind(this)
@@ -25,14 +52,13 @@ export default class FloatLayer extends PureComponent {
         this.onMainBtnClick = this.onMainBtnClick.bind(this)
         this.onSecondaryBtnClick = this.onSecondaryBtnClick.bind(this)
         this.onBackAndroid = this.onBackAndroid.bind(this)
+        this.showFloatLayer = this.showFloatLayer.bind(this)
     }
 
     componentDidMount() {
         if (Platform.OS === 'android') {
             BackAndroid.addEventListener('hardwareBackPress', this.onBackAndroid);
         }
-        this.beginAnimal()
-
     }
 
     componentWillUnmount() {
@@ -77,7 +103,10 @@ export default class FloatLayer extends PureComponent {
 
         // 动画结束以后再回调方法，移除组件
         setTimeout(()=>{
-            this.props.onCloseClick && this.props.onCloseClick()
+            this.setState({
+                isShowModal: false
+            });
+            // this.props.onCloseClick && this.props.onCloseClick()
         },animatedTime)
     }
 
@@ -96,7 +125,7 @@ export default class FloatLayer extends PureComponent {
     /**
      * android  点击物理返回键时处理
      */
-    onBackAndroid = () => {
+    onBackAndroid() {
         // 隐藏弹框
         this.closeAction()
         return true;
@@ -108,50 +137,69 @@ export default class FloatLayer extends PureComponent {
 
 }
 
+FloatLayer.publicFunction = {
+    showFloatLayer: PropsType.func, // 显示浮层
+    banMainBtn: PropsType.func, // 禁止主操作按钮
+    allowMainBtn: PropsType.func, // 启用主操作按钮
+};
+
 FloatLayer.propsType = {
 
     /*
     * 弹框类型 （必填）
+    * 需要import FloatLayerType
     *
-    * TYPE_TITLE            只有标题
-    * TYPE_IMAGE            图标，标题，副标题
-    * TYPE_TITLE_BUTTON     标题，标题左右按钮
-    * TYPE_TITLE_SCROLL     标题，内部滑动组件
+    * FloatLayerType.TYPE_TITLE            只有标题
+    * FloatLayerType.TYPE_IMAGE            图标，标题，副标题
+    * FloatLayerType.TYPE_TITLE_BUTTON     标题，标题左右按钮
+    * FloatLayerType.TYPE_TITLE_SCROLL     标题，内部滑动组件
     *
     * */
-    floatLayerType: PropsType.oneOf(['TYPE_TITLE', 'TYPE_IMAGE', 'TYPE_TITLE_BUTTON', 'TYPE_TITLE_SCROLL']).isRequired,
+    floatLayerType: PropsType.string.isRequired,
 
     /*
     * 公用属性 （必填）
     * */
     title: PropsType.string.isRequired, // 标题
-    onCloseClick: PropsType.func.isRequired, // 关闭事件
 
     /*
-    * TYPE_TITLE_SCROLL 没有按钮操作,不传以下属性，其他类型按需传入
+    *  ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
+    * ️FloatLayerType.TYPE_TITLE_SCROLL 没有按钮操作,不传以下属性，其他类型按需传入
     * */
     mainBtnText: PropsType.string, // 主操作文本
     secondaryBtnText: PropsType.string, // 次操作文本, 不设置次属性则默认只有一个主操作
     onMainBtnClick: PropsType.func, // 主操作事件
     onSecondaryBtnClick: PropsType.func, // 次操作事件
 
+    isBanMainBtn: PropsType.bool, // 是否禁止主操作按钮。默认不禁止
+    isAutoAllowMainBtn: PropsType.bool, //  isBanMainBtn = true 的情况下，是否自动的解禁主操作按钮. 5秒以后自动解禁
+
     /*
-    * TYPE_IMAGE 对应所填写的属性
+    * FloatLayerType.TYPE_IMAGE 对应所填写的属性
     * */
-    subTitle: PropsType.string, // 副标题
-    subTitleIsRichText: PropsType.bool, //  副标题是否是 富文本类型
-    richBeginIndex: PropsType.number, // subTitleIsRichText 为 true 时,则需传入此参数 表示富文本开始位置
-    richLength: PropsType.number, // subTitleIsRichText 为 true 时,则需传入此参数 表示富文本长度
+    subTitles: PropsType.array, // 副标题数组 [{content: '文字内容:文字必填',color: '文字的颜色:用于不同文字不同颜色的场景，默认可不传，默认颜色 #999999'}]
+
     imageType: PropsType.oneOf(['success', 'warning']), // 图标类型 （必填）
 
     /*
-    * TYPE_TITLE_SCROLL 对应所填写的属性 （必填）
+    * FloatLayerType.TYPE_TITLE_SCROLL 对应所填写的属性 （必填）
     * */
-    scrollDataSource: PropsType.array, // 滚动列表数组 {title: ''，...}
+    scrollDataSource: PropsType.array, // 滚动列表数组 {""，...} 标题数组
     onScrollListItemClick: PropsType.func, // 滚动列表item点击, 带有一个 index 的参数，标记点击了第几个item
 
-}
+};
 FloatLayer.defaultProps = {
+    floatLayerType :FloatLayerType.TYPE_TITLE,
+};
 
-}
+export default FloatLayer
 
+/*
+* 用法
+  <FloatLayer ref={(ref)=>this.floatLayer = ref} floatLayerType={FloatLayerType.TYPE_TITLE} ...props>
+      <Text style={{height: 20, width: 80, marginTop: 100}}>安达市大</Text>
+      ...customView...
+  </FloatLayer>
+
+  this.floatLayer.showFloatLayer()
+* */

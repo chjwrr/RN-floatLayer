@@ -30,7 +30,7 @@ export default StyleSheet.create({
     mainBtn: {
         marginHorizontal: bottomHorizontal,
         backgroundColor: mainColor,
-        height: bottomHeight,
+        height: bottomHeight - 10,
         justifyContent: 'center',
         alignItems: 'center'
     },
@@ -40,23 +40,24 @@ export default StyleSheet.create({
     },
     secondaryView: {
         marginHorizontal: bottomHorizontal,
-        flex: 1,
         flexDirection: 'row'
     },
     secondaryBtn: {
         borderWidth: 1,
         borderColor: mainColor,
-        flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: whiteColor
+        backgroundColor: whiteColor,
+        height: bottomHeight - 10,
+        flex: 1
     },
     secondaryMainBtn: {
         marginLeft: bottomSpaceWidth ,
-        flex: 1,
+        height: bottomHeight - 10,
         backgroundColor: mainColor,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        flex: 1
     },
     secondaryBtnText:{
         color: mainColor,

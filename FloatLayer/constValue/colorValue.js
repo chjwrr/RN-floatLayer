@@ -1,4 +1,5 @@
 const mainColor = '#FF6644';
+const banMainColor = '#FAE3DA';
 const whiteColor = '#ffffff';
 const blackColor = '#000000';
 const titleColor = '#333333';
@@ -8,6 +9,7 @@ const scrollItemTitleColor = '#666666'
 
 export {
     mainColor,
+    banMainColor,
     whiteColor,
     blackColor,
     titleColor,

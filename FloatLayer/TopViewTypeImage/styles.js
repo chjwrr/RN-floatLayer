@@ -10,8 +10,13 @@ import {
     titleColor,
     subTitleColor
 } from '../constValue/colorValue'
+import {
+    topHeightTypeImage
+} from '../constValue/floatLayerValue'
+
 export default StyleSheet.create({
     container: {
+        height: topHeightTypeImage
     },
     closeView: {
         flexDirection: 'row',
@@ -31,19 +36,18 @@ export default StyleSheet.create({
     },
     subTitle: {
         fontSize: 14,
-        color: subTitleColor,
         marginTop: 10,
         lineHeight: 20
     },
-    subRichTitle:{
-        fontSize: 14,
-        color: mainColor,
-        marginTop: 10,
-        lineHeight: 20
+    subTitleView:{
+        flexDirection: 'row',
+        paddingHorizontal: 15,
+        textAlign: 'center',
+        marginTop: 10
     },
     view: {
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
     },
     closeImg: {
         width: 16,

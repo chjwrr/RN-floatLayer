@@ -20,10 +20,11 @@ export default class PopListView extends PureComponent {
     }
 }
 PopListView.propsType = {
-    scrollDataSource: PropsType.array.isRequired, // 数据源
+    scrollDataSource: PropsType.array.isRequired, // 数据源 字符串数组
     onScrollListItemClick: PropsType.func, // item点击
 }
 PopListView.defaultProps = {
+    scrollDataSource: []
 }
 
 

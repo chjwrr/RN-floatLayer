@@ -18,16 +18,29 @@ export default {
             showTitle = title.substr(0, 10) + '...'
         }
 
+        let leftTitle = secondaryBtnText
+        if (leftTitle.length > 4){
+            leftTitle = secondaryBtnText.substr(0, 4) + '...'
+        }
+
+        let rightTitle = mainBtnText
+        if (rightTitle.length > 4){
+            rightTitle = mainBtnText.substr(0, 4) + '...'
+        }
+
         return (
             <View>
                 <View style={styles.container}>
                     <TouchableOpacity style={styles.leftBtn} onPress={onSecondaryBtnClick}>
-                        <Text style={styles.leftBtnText}>{secondaryBtnText}</Text>
+                        <Text numberOfLines={1} style={styles.leftBtnText}>{leftTitle}</Text>
                     </TouchableOpacity>
-                    <Text numberOfLines={1} style={styles.title}>{showTitle}</Text>
+
                     <TouchableOpacity style={styles.rightBtn} onPress={onMainBtnClick}>
-                        <Text style={styles.rightBtnText}>{mainBtnText}</Text>
+                        <Text numberOfLines={1} style={styles.rightBtnText}>{rightTitle}</Text>
                     </TouchableOpacity>
+                </View>
+                <View style={styles.titleView}>
+                    <Text numberOfLines={1} style={styles.title}>{showTitle}</Text>
                 </View>
             </View>
         )
